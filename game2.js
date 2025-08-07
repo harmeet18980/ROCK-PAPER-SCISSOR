@@ -1,69 +1,51 @@
-let userscore=0;
-let compscore=0;
+let box=document.querySelectorAll(".box")
+let reset=document.querySelector(".reset")
 
-const choices=document.querySelectorAll(".choice");
-const msg=document.querySelector("#msg");
-const score1=document.querySelector("#userscore");
-const score2=document.querySelector("#compscore")
+let turnO=true;
+const winpattern=
+    [[0,1,2],
+    [0,3,6],
+    [0,4,8],
+    [1,4,7],
+    [2,4,8],
+    [2,5,8],
+    [3,4,5],
+    [6,7,8]];
 
-const genCompChoice=()=>{
-    const options=["ROCK","PAPER","SCISSOR"]; //math.randam to create random choice
-    const random=Math.floor(Math.random() * 3);
-    return options[random];
-
-}
-const drawGame = () => {
-    console.log("GAME IS DRAW");
-      msg.innerText="IT'S A DRAW";
-      msg.style.backgroundColor="blue"
-}
-const showWinner=(userWin)=>{
-    if(userWin===true)
-    {
-        console.log("YOU WON!!");
-        msg.innerText="YOU WON";
-        msg.style.backgroundColor="green";
-        userscore++;
-        score1.innerText=userscore
-    }
-    else{
-        console.log("COMP WON!!");
-          msg.innerText="COMP WON";
-          msg.style.backgroundColor="red";
-          compscore++;
-          score2.innerText=compscore
-    }
-}
-const playGame=(userChoice)=> {
-    console.log("User Choice:",userChoice);
-    const compChoice=genCompChoice();
-    console.log("Comp Choice:",compChoice);
-
-if(userChoice === compChoice)
-{
-    drawGame();
-}
-else{
-    let userWin=true;
-    if(userChoice==="ROCK"){
-    userWin = compChoice==="PAPER"? false : true;}
-    else if(userChoice==="PAPER"){
-    userWin =compChoice==="SCISSOR" ? false : true;
-    } 
-    else{
-    userWin= compChoice==="ROCK"? false : true;
-    }   
-    showWinner(userWin);
-}
-};
-
-choices.forEach((choice)=>{
-    console.log(choice);
-    choice.addEventListener("click",()=>{
-    const  userChoice = choice.getAttribute("id");
-   
-    playGame(userChoice);
+box.forEach((box) => {
+    box.addEventListener("click",() => {
+        console.log("the box was clicked");
+        if(turnO){
+        box.innerText="O";
+        turnO=false;
+        }
+        else{
+          box.innerText="X";
+          turnO=true;
+        }
+        box.disabled=true;   //once done cannot be changed
+        checkWinner();
     });
 });
 
+const checkWinner = () =>{
+    for (let pattern of winpattern){
 
+          let pos1Val=box[pattern[0]].innerText
+          let pos2Val=box[pattern[1]].innerText
+          let pos3Val=box[pattern[2]].innerText;
+
+          if(pos1Val!=""&& pos2Val!=""&& pos3Val!=""){
+            if(pos1Val===pos2Val && pos2Val===pos3Val){
+                console.log("Winner",pos1Val)
+            }
+          }
+    }
+}
+reset.addEventListener("click",()=>{
+    box.forEach((b)=>{
+        b.innerText="";
+        b.disabled=false;
+    });
+    turnO=true;
+})
